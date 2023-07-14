@@ -5,6 +5,11 @@ export default {
     extend: {
       fontFamily: {
         poppins: ['"Poppins", sans-serif']
+      },
+      colors: {
+        blue: {
+          300: '#01b4e4'
+        }
       }
     }
   },

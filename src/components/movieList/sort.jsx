@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable no-undef */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
@@ -5,6 +7,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { connect } from "react-redux";
 const people = [
   { name: "Popularity Descending", value: "popularity.desc" },
   { name: "Popularity Ascending", value: "popularity.asc" },
@@ -14,7 +17,8 @@ const people = [
   { name: "Title (A-Z)", value: "title.asc" },
   { name: "Title (Z-A)", value: "title.desc" },
 ];
-function sort() {
+function sort(data) {
+  console.log("data", data);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(people[0]);
   const handleIsOpen = () => {
@@ -22,7 +26,7 @@ function sort() {
   };
 
   return (
-    <div className="p-3 bg-white rounded-lg mt-5 drop-shadow-2xl">
+    <div className="relative p-3 bg-white rounded-lg mt-5 drop-shadow-2xl">
       <div className="flex justify-between" onClick={() => handleIsOpen()}>
         <div className="font-semibold">Sort</div>
         <div>
@@ -53,7 +57,7 @@ function sort() {
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  <Listbox.Options className=" mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                     {people.map((person, personIdx) => (
                       <Listbox.Option
                         key={personIdx}
@@ -98,4 +102,8 @@ function sort() {
   );
 }
 
-export default sort;
+const mapStateToProps = (state) => ({
+  data: state.example.data,
+});
+
+export default connect(mapStateToProps)(sort);
