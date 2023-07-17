@@ -1,12 +1,15 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
 import { APIURL, Header, IMAGEURL } from "../config/config";
 import axios from "axios";
-import Slider from "@mui/material/Slider";
-import MainContainerComponent from "./mainContainer";
+import { connect } from "react-redux";
+import store from "../store/store";
 axios.defaults.headers.common = Header;
+import RangeSlider from "react-range-slider-input";
+import "react-range-slider-input/dist/style.css";
 
 function filters() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,75 +20,30 @@ function filters() {
   const [certification, setCertification] = useState(["U", "UA", "A"]);
   const [selectedCertification, setSelectedCertification] = useState([]);
   const [userScore, setUserScore] = useState([0, 50]);
-  const [minUserScore, setMinUserScore] = useState("");
+  const [minUserScore, setMinUserScore] = useState(250);
   const [runTime, setRunTime] = useState([0, 100]);
-  const multipliedValues = runTime.map((value) => Math.floor(value * 4));
-
-  const marks = [
-    {
-      value: 0,
-      label: "0",
-    },
-    {
-      value: 50,
-      label: "5",
-    },
-    {
-      value: 100,
-      label: "10",
-    },
-  ];
-
-  const minUserMarks = [
-    {
-      value: 0,
-      label: "0",
-    },
-    {
-      value: 20,
-      label: "100",
-    },
-    {
-      value: 40,
-      label: "200",
-    },
-    {
-      value: 60,
-      label: "300",
-    },
-    {
-      value: 80,
-      label: "400",
-    },
-    {
-      value: 100,
-      label: "500",
-    },
-  ];
-
-  const runtimeMark = [
-    {
-      value: 0,
-      label: "0",
-    },
-    {
-      value: 30,
-      label: "120",
-    },
-    {
-      value: 60,
-      label: "240",
-    },
-    {
-      value: 90,
-      label: "360",
-    },
-  ];
   // Open / Close
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
   };
 
+  // Handle Set From Date
+  const handleFromDate = (event) => {
+    setFromDate(event);
+    store.dispatch({
+      type: "UPDATE_RELEASE_DATE_GTE",
+      payload: event,
+    });
+  };
+
+  // Handle Set To Date
+  const handleToDate = (event) => {
+    setToDate(event);
+    store.dispatch({
+      type: "UPDATE_RELEASE_DATE_LTE",
+      payload: event,
+    });
+  };
   // Get Genres
   const handleGenres = async () => {
     const endPoint = APIURL + "genre/movie/list";
@@ -103,53 +61,85 @@ function filters() {
 
   // Handle Genres Selected
   const handleGenresSelected = (value) => {
+    let updatedSelectedGenres;
     if (selectedGenres.includes(value)) {
-      setSelectedGenres(selectedGenres.filter((v) => v !== value));
+      updatedSelectedGenres = selectedGenres.filter((v) => v !== value);
     } else {
-      setSelectedGenres([...selectedGenres, value]);
+      updatedSelectedGenres = [...selectedGenres, value];
     }
+    setSelectedGenres(updatedSelectedGenres);
+    store.dispatch({
+      type: "UPDATE_GENRES",
+      payload: updatedSelectedGenres,
+    });
   };
 
   // Handle Certification Selected
   const handleCertificationSelected = (value) => {
+    let updatedSelectedCertification;
     if (selectedCertification.includes(value)) {
-      setSelectedCertification(
-        selectedCertification.filter((v) => v !== value)
+      updatedSelectedCertification = selectedCertification.filter(
+        (v) => v !== value
       );
     } else {
-      setSelectedCertification([...selectedCertification, value]);
+      updatedSelectedCertification = [...selectedCertification, value];
     }
+    setSelectedCertification(updatedSelectedCertification);
+    store.dispatch({
+      type: "UPDATE_CERTIFICATION",
+      payload: updatedSelectedCertification,
+    });
   };
 
   // Handle User Score
-  const handleChangeUserScore = (event, newValue) => {
-    setUserScore(newValue);
+  const handleChangeUserScore = (value) => {
+    setUserScore(value);
+    store.dispatch({
+      type: "UPDATE_VOTE_AVERAGE",
+      payload: value,
+    });
   };
 
   // Handle Minimum User Score
   const handleChangeMinUserScore = (value) => {
-    setMinUserScore(value * 5);
+    setMinUserScore(value[1] * 5);
+    store.dispatch({
+      type: "UPDATE_VOTE_COUNT",
+      payload: value[1] * 5,
+    });
   };
 
   // Handle Runtime
-  const handleChangeRuntime = (event, newValue) => {
-    setRunTime(newValue);
+  const handleChangeRuntime = (value) => {
+    setRunTime(value);
+    let updateRuntime = value;
+    const multipliedValues = updateRuntime.map((value) =>
+      Math.floor(value * 4)
+    );
+    store.dispatch({
+      type: "UPDATE_RUNTIME",
+      payload: multipliedValues,
+    });
   };
 
   return (
     <div className="p-3 bg-white rounded-lg mt-5 drop-shadow-2xl">
       <div className="flex justify-between" onClick={() => handleIsOpen()}>
         <div className="font-semibold">Filters</div>
-        <div>
-          <ChevronRightIcon />
+        <div className="flex">
+          {isOpen ? (
+            <ChevronDownIcon className="h-5 w-5 self-center " />
+          ) : (
+            <ChevronRightIcon className="h-5 w-5 self-center " />
+          )}
         </div>
       </div>
       {isOpen && (
         <>
+          {/* Release Dates */}
           <div className="border-t-2 mt-2 pt-2 text-gray-400">
             Release Dates
           </div>
-
           <div className="flex justify-between">
             <div className="self-center opacity-40 text-sm">from</div>
             <div className="border-2 rounded-lg p-2">
@@ -157,7 +147,7 @@ function filters() {
                 type="date"
                 className="text-xs"
                 onChange={(event) => {
-                  setFromDate(event.target.value);
+                  handleFromDate(event.target.value);
                 }}
               />
             </div>
@@ -169,19 +159,23 @@ function filters() {
                 type="date"
                 className="text-xs"
                 onChange={(event) => {
-                  setToDate(event.target.value);
+                  handleToDate(event.target.value);
                 }}
               />
             </div>
           </div>
+
           {/* Genres */}
           <div className="border-t-2 mt-3 pt-2 text-gray-400">Genres</div>
-          <div className=" grid grid-cols-2 gap-4 mt-3">
+          <div className=" grid grid-cols-2 gap-4 mt-3 ">
             {genres.length !== 0 &&
               genres.map((name, index) => {
                 return (
                   <>
-                    <div className="text-center text-sm transition-colors">
+                    <div
+                      key={index}
+                      className="text-center text-sm transition-colors"
+                    >
                       <div
                         onClick={() => handleGenresSelected(name.id)}
                         className={
@@ -229,27 +223,38 @@ function filters() {
           {/* User Score */}
           <div className="border-t-2 mt-3 pt-2 text-gray-400">User Score</div>
           <div className="p-3 mt-3">
-            <Slider
+            <RangeSlider
               value={userScore}
-              onChange={handleChangeUserScore}
-              defaultValue={50}
-              // valueLabelDisplay={value / 10}
+              onInput={handleChangeUserScore}
               step={10}
-              marks={marks}
             />
+            <div className="flex justify-between mt-2 text-sm">
+              <span>0</span>
+              <span>5</span>
+              <span>10</span>
+            </div>
           </div>
 
-          {/* User Score */}
+          {/* User Votes */}
           <div className="border-t-2 mt-3 pt-2 text-gray-400">
             Minimum User Votes
           </div>
           <div className="p-3 mt-3">
-            <Slider
-              getAriaValueText={handleChangeMinUserScore}
-              defaultValue={50}
+            <RangeSlider
+              onInput={handleChangeMinUserScore}
+              defaultValue={[0, 0]}
               step={10}
-              marks={minUserMarks}
+              thumbsDisabled={[true, false]}
+              rangeSlideDisabled={true}
             />
+            <div className="flex justify-between mt-2 text-sm ml-4">
+              <span>0</span>
+              <span>100</span>
+              <span>200</span>
+              <span>300</span>
+              <span>400</span>
+              <span>500</span>
+            </div>
           </div>
 
           {/* Runtime */}
@@ -257,21 +262,27 @@ function filters() {
             Minimum User Votes
           </div>
           <div className="p-3 mt-3">
-            <Slider
+            <RangeSlider
               value={runTime}
-              onChange={handleChangeRuntime}
-              defaultValue={100}
-              step={3.8461}
-              marks={runtimeMark}
+              onInput={handleChangeRuntime}
+              step={4}
             />
+            <div className="flex justify-between mt-2 text-sm ml-4">
+              <span>0</span>
+              <span>100</span>
+              <span>200</span>
+              <span>300</span>
+              <span>400</span>
+            </div>
           </div>
         </>
       )}
-      {/* <div style={{ display: "none" }}>
-        <MainContainerComponent selectedGenres={selectedGenres} />
-      </div> */}
     </div>
   );
 }
 
-export default filters;
+const mapStateToProps = (state) => ({
+  data: state.example,
+});
+
+export default connect(mapStateToProps)(filters);

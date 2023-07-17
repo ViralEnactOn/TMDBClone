@@ -5,21 +5,22 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { APIURL, Header, IMAGEURL } from "../config/config";
-import CircularProgress from "@mui/material/CircularProgress";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import store from "../store/store";
+import { ThreeCircles } from "react-loader-spinner";
+import { Link } from "react-router-dom";
 axios.defaults.headers.common = Header;
 
-function mainContainer(props) {
-  let newValue;
-  if (props.selectedGenres) {
-    let propValue = props.selectedGenres;
-    newValue = propValue.join(",").replace(" ", "");
-  }
+function mainContainer() {
+  const reduxDetails = store.getState().example;
   const [movie, setMovie] = useState([]);
   const [loader, setLoader] = useState(true);
 
   useEffect(() => {
+    console.log("reduxDetails", reduxDetails);
     handleMovie();
-  }, [props]);
+  }, [reduxDetails]);
 
   const handleMovie = async () => {
     setLoader(true);
@@ -30,16 +31,27 @@ function mainContainer(props) {
         language: "en-US",
         include_adult: false,
         include_video: false,
+        sort_by: reduxDetails.sort,
+        watch_region: reduxDetails.country,
+        with_watch_providers: reduxDetails.WatchProviders.join("|"),
+        "release_date.gte": reduxDetails.releaseDateGte,
+        "release_date.lte": reduxDetails.releaseDateLte,
+        certification: reduxDetails.certifications.join("|"),
+        "vote_average.gte": reduxDetails.voteAverageGte,
+        "vote_average.lte": reduxDetails.voteAverageLte,
+        "with_runtime.gte": reduxDetails.runtimeGte,
+        "with_runtime.lte": reduxDetails.runtimeLte,
       };
-      if (props.selected) {
-        params.sort_by = props.selected;
+
+      if (reduxDetails.genres !== "") {
+        params.with_genres = reduxDetails.genres.join(",");
       }
-      if (props.selectedGenres) {
-        params.with_genres = newValue;
+      if (reduxDetails.voteCountGte !== "") {
+        params["vote_count.lte"] = 0;
+        params["vote_count.gte"] = reduxDetails.voteCountGte;
       }
       await axios.get(endPoint, { params }).then((res) => {
         setLoader(false);
-        console.log("handleMovie", res.data.results);
         setMovie(res.data.results);
       });
     } catch (error) {
@@ -50,9 +62,24 @@ function mainContainer(props) {
   return (
     <>
       {loader === true ? (
-        <></>
+        <>
+          <div className="flex justify-center h-screen items-center">
+            <ThreeCircles
+              height="100"
+              width="100"
+              color="#4fa94d"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+              ariaLabel="three-circles-rotating"
+              outerCircleColor=""
+              innerCircleColor=""
+              middleCircleColor=""
+            />
+          </div>
+        </>
       ) : (
-        <div className="grid grid-cols-5 gap-4 absolute w-3/5 pl-12 pt-12 font-poppins">
+        <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 pt-12 font-poppins">
           {movie.length !== 0 &&
             movie.map((item, index) => {
               let dateObj = new Date(item.release_date);
@@ -63,44 +90,58 @@ function mainContainer(props) {
               });
               return (
                 <>
-                  <div
-                    key={index}
-                    className="h-96 w-5/5 rounded-lg border-solid border-2 "
-                  >
-                    <img
-                      src={IMAGEURL + item.poster_path}
-                      alt="poster"
-                      className="rounded-t-lg h-64 w-full"
-                    />
+                  <Link to={`movie/${item.id}`}>
+                    <div
+                      key={index}
+                      className="h-auto rounded-lg border-solid border-2 "
+                    >
+                      <img
+                        src={
+                          item.poster_path
+                            ? IMAGEURL + item.poster_path
+                            : IMAGEURL + item.backdrop_path
+                        }
+                        alt={item.original_title}
+                        className="rounded-t-lg"
+                      />
 
-                    <div className="p-2 ">
-                      <div className="absolute text-center">
-                        <CircularProgress
-                          variant="determinate"
+                      <div className="p-2 ">
+                        {/* <div className="text-center w-11 h-10">
+                        <CircularProgressbar
+                          strokeWidth={6}
                           value={
                             item.vote_average ? item.vote_average * 10 : ""
                           }
-                        />
-                      </div>
-                      <div className="w-10 h-10 rounded-lg ">
-                        <div className="flex flex-col items-center justify-center w-full h-full text-xs">
-                          {`${
+                          text={`${
                             item.vote_average ? item.vote_average * 10 : ""
                           }%`}
+                          styles={buildStyles({
+                            pathColor: "#03AC13",
+                            trailColor: "lightgray",
+                            textSize: "30px",
+                          })}
+                        />
+                      </div> */}
+                        <div className="font-semibold text-sm mt-2">
+                          {item.original_title ? item.original_title : ""}
+                        </div>
+                        <div className="mt-1 text-xs">
+                          {formattedDate ? formattedDate : ""}
                         </div>
                       </div>
-                      <div className="font-semibold text-sm">
-                        {item.original_title ? item.original_title : ""}
-                      </div>
-                      <div className="mt-1 text-xs">
-                        {formattedDate ? formattedDate : ""}
-                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </>
               );
             })}
         </div>
+      )}
+      {movie.length === 0 && (
+        <>
+          <div className="flex justify-start pl-12 pt-12 font-poppins text-gray-400">
+            No items were found that match your query.
+          </div>
+        </>
       )}
     </>
   );

@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-target-blank */
 import React from "react";
@@ -5,11 +7,12 @@ import SortComponent from "./components/movieList/sort";
 import WheretoWatchComponent from "./components/movieList/wheretoWatch";
 import FiltersComponent from "./components/movieList/filters";
 import MainContainerComponent from "./components/movieList/mainContainer";
+import { connect } from "react-redux";
 function App() {
   return (
     <>
       <main className="min-w-max flex justify-center bg-#000 font-poppins">
-        <div className="container   ">
+        <div className="container">
           <div className="flex min-h-screen mt-20">
             {/* Sidebar */}
             <div className="w-1/5 flex flex-col ">
@@ -29,4 +32,8 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  data: state.example,
+});
+
+export default connect(mapStateToProps)(App);

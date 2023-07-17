@@ -1,27 +1,32 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import {
+  CheckIcon,
+  ChevronUpDownIcon,
+  ChevronRightIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/20/solid";
 import axios from "axios";
 import { APIURL, Header, IMAGEURL } from "../config/config";
-import { CircularProgress } from "@mui/material";
-import Box from "@mui/material/Box";
-
+import store from "../store/store";
 axios.defaults.headers.common = Header;
 
 function wheretoWatch() {
+  const reduxValue = store.getState().example;
   const [isOpen, setIsOpen] = useState(false);
   const [region, setRegion] = useState([]);
-  const [selected, setSelected] = useState("Select Region");
+  const [selectedProvider, setSelectedProvider] = useState([]);
+  const [selected, setSelected] = useState(reduxValue.country);
   const [watchProvider, setWatchProvider] = useState([]);
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
   };
 
   const handleWatchProvider = async (value) => {
+    store.dispatch({ type: "UPDATE_COUNTRY", payload: value.iso_3166_1 });
     setSelected(value);
     const endPoint = APIURL + "watch/providers/movie";
     const params = {
@@ -43,6 +48,20 @@ function wheretoWatch() {
     });
   };
 
+  const handleSelectedWatchProvier = (value) => {
+    let updatedSelectedProvider;
+    if (selectedProvider.includes(value)) {
+      updatedSelectedProvider = selectedProvider.filter((v) => v !== value);
+    } else {
+      updatedSelectedProvider = [...selectedProvider, value];
+    }
+    setSelectedProvider(updatedSelectedProvider);
+    store.dispatch({
+      type: "UPDATE_WATCH_PROVIDERS",
+      payload: updatedSelectedProvider,
+    });
+  };
+
   useEffect(() => {
     handleRegion();
   }, []);
@@ -50,8 +69,12 @@ function wheretoWatch() {
     <div className="p-3 bg-white rounded-lg mt-5 drop-shadow-2xl">
       <div className="flex justify-between" onClick={() => handleIsOpen()}>
         <div className="font-semibold">Where To Watch</div>
-        <div>
-          <ChevronRightIcon />
+        <div className="flex">
+          {isOpen ? (
+            <ChevronDownIcon className="h-5 w-5 self-center " />
+          ) : (
+            <ChevronRightIcon className="h-5 w-5 self-center " />
+          )}
         </div>
       </div>
       {isOpen && (
@@ -135,7 +158,7 @@ function wheretoWatch() {
                   return (
                     <>
                       <div
-                        className="flex justify-center self-center "
+                        className="relative flex justify-center self-center"
                         key={index}
                       >
                         <img
@@ -143,6 +166,26 @@ function wheretoWatch() {
                           src={IMAGEURL + name.logo_path}
                           alt={name.provider_name}
                         />
+                        <div
+                          onClick={() =>
+                            handleSelectedWatchProvier(name.provider_id)
+                          }
+                          className={
+                            selectedProvider.includes(name.provider_id)
+                              ? "absolute inset-0 selected hover:bg-white rounded-lg transition-colors opacity-70 flex items-center justify-center"
+                              : "absolute inset-0 hover:bg-blue-300  rounded-lg transition-colors opacity-70"
+                          }
+                        >
+                          <div
+                            className={
+                              selectedProvider.includes(name.provider_id)
+                                ? "flex items-center justify-center"
+                                : "hidden"
+                            }
+                          >
+                            <CheckIcon className="h-10 w-10" />
+                          </div>
+                        </div>
                       </div>
                     </>
                   );

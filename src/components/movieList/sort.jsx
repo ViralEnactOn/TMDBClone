@@ -2,12 +2,17 @@
 /* eslint-disable no-undef */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import {
+  CheckIcon,
+  ChevronUpDownIcon,
+  ChevronRightIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/20/solid";
 import { connect } from "react-redux";
+import store from "../store/store";
 const people = [
   { name: "Popularity Descending", value: "popularity.desc" },
   { name: "Popularity Ascending", value: "popularity.asc" },
@@ -17,20 +22,28 @@ const people = [
   { name: "Title (A-Z)", value: "title.asc" },
   { name: "Title (Z-A)", value: "title.desc" },
 ];
-function sort(data) {
-  console.log("data", data);
+function sort() {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(people[0]);
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleSelectedChange = (value) => {
+    setSelected(value);
+    store.dispatch({ type: "UPDATE_SORT", payload: value.value });
+  };
+
   return (
     <div className="relative p-3 bg-white rounded-lg mt-5 drop-shadow-2xl">
       <div className="flex justify-between" onClick={() => handleIsOpen()}>
         <div className="font-semibold">Sort</div>
-        <div>
-          <ChevronRightIcon />
+        <div className="flex">
+          {isOpen ? (
+            <ChevronDownIcon className="h-5 w-5 self-center " />
+          ) : (
+            <ChevronRightIcon className="h-5 w-5 self-center " />
+          )}
         </div>
       </div>
       {isOpen && (
@@ -40,7 +53,12 @@ function sort(data) {
           </div>
 
           <div className="top-16 w-72">
-            <Listbox value={selected} onChange={setSelected}>
+            <Listbox
+              value={selected}
+              onChange={(value) => {
+                handleSelectedChange(value);
+              }}
+            >
               <div className="relative mt-1 ">
                 <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                   <span className="block truncate">{selected.name}</span>
@@ -103,7 +121,7 @@ function sort(data) {
 }
 
 const mapStateToProps = (state) => ({
-  data: state.example.data,
+  data: state.example,
 });
 
 export default connect(mapStateToProps)(sort);
