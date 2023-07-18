@@ -11,7 +11,6 @@ axios.defaults.headers.common = Header;
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 
-
 function filters() {
   const [isOpen, setIsOpen] = useState(false);
   const [fromDate, setFromDate] = useState("");
@@ -23,6 +22,7 @@ function filters() {
   const [userScore, setUserScore] = useState([0, 50]);
   const [minUserScore, setMinUserScore] = useState(250);
   const [runTime, setRunTime] = useState([0, 100]);
+  console.log("selectedGenres", selectedGenres);
   // Open / Close
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
@@ -60,13 +60,14 @@ function filters() {
     handleGenres();
   }, []);
 
-  // Handle Genres Selected
-  const handleGenresSelected = (value) => {
+  const handleGenresSelected = (id, name) => {
     let updatedSelectedGenres;
-    if (selectedGenres.includes(value)) {
-      updatedSelectedGenres = selectedGenres.filter((v) => v !== value);
+
+    if (selectedGenres.some((genre) => genre.id === id)) {
+      updatedSelectedGenres = selectedGenres.filter((genre) => genre.id !== id);
     } else {
-      updatedSelectedGenres = [...selectedGenres, value];
+      // updatedSelectedGenres = [...selectedGenres, [id, name]];
+      updatedSelectedGenres = [...selectedGenres, id];
     }
     setSelectedGenres(updatedSelectedGenres);
     store.dispatch({
@@ -178,7 +179,7 @@ function filters() {
                       className="text-center text-sm transition-colors"
                     >
                       <div
-                        onClick={() => handleGenresSelected(name.id)}
+                        onClick={() => handleGenresSelected(name.id, name.name)}
                         className={
                           selectedGenres.includes(name.id)
                             ? "selected p-1 hover:bg-white hover:text-black rounded-l-full rounded-r-full border-solid border-2 transition-colors"

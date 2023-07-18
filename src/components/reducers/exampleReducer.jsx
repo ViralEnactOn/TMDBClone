@@ -70,6 +70,11 @@ const exampleReducer = (state = initialState, action) => {
         runtimeGte: action.payload[0],
         runtimeLte: action.payload[1],
       };
+    case "UPDATE_FILTERS":
+      return {
+        ...state,
+        ...action.payload,
+      };
     default:
       return state;
   }
