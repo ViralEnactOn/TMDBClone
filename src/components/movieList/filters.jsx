@@ -11,6 +11,7 @@ axios.defaults.headers.common = Header;
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 
+
 function filters() {
   const [isOpen, setIsOpen] = useState(false);
   const [fromDate, setFromDate] = useState("");
