@@ -1,11 +1,11 @@
 const initialState = {
   sort: "popularity.desc",
   country: "IN",
-  WatchProviders: [],
+  WatchProviders: "",
   releaseDateGte: "",
   releaseDateLte: "",
   genres: "",
-  certifications: [],
+  certifications: "",
   voteAverageGte: "",
   voteAverageLte: "",
   voteCountGte: "",

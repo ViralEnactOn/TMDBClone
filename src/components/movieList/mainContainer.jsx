@@ -1,8 +1,9 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { APIURL, Header, IMAGEURL } from "../config/config";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
@@ -10,7 +11,7 @@ import "react-circular-progressbar/dist/styles.css";
 import store from "../store/store";
 import { ThreeCircles } from "react-loader-spinner";
 import { Link } from "react-router-dom";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { useSelector } from "react-redux";
@@ -23,8 +24,18 @@ function mainContainer() {
   const [loader, setLoader] = useState(true);
   const selectedFilters = useSelector((state) => state.example);
   const [topMargin, setTopMargin] = useState(40);
+  const parameters = {};
+  // Fetch URL Params
+  const extractURLParameters = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    for (const [key, value] of urlParams.entries()) {
+      parameters[key] = value;
+    }
+    return parameters;
+  };
+
+  // Filter Redux Value
   const handleFilterToggle = (filterType, filterValue) => {
-    // Dispatch the updateFilters action to update the Redux store with the new filters
     const newFilters = {
       ...selectedFilters,
       [filterType]: Array.isArray(selectedFilters[filterType])
@@ -36,8 +47,20 @@ function mainContainer() {
     store.dispatch({ type: "UPDATE_FILTERS", payload: newFilters });
   };
 
+  // Set Params
+  const handleParams = () => {
+    const queryParams = new URLSearchParams(location.search);
+    for (const key in selectedFilters) {
+      queryParams.set(key, selectedFilters[key]);
+    }
+    const newUrl = `${location.pathname}?${queryParams.toString()}`;
+    window.history.replaceState(null, "", newUrl);
+  };
+
   useEffect(() => {
-    console.log("reduxDetails", reduxDetails);
+    // console.log("reduxDetails", reduxDetails);
+    handleParams();
+    extractURLParameters();
     handleMovie();
   }, [reduxDetails]);
 
@@ -51,24 +74,23 @@ function mainContainer() {
         language: "en-US",
         include_adult: false,
         include_video: false,
-        sort_by: reduxDetails.sort,
-        watch_region: reduxDetails.country,
-        with_watch_providers: reduxDetails.WatchProviders.join("|"),
-        "release_date.gte": reduxDetails.releaseDateGte,
-        "release_date.lte": reduxDetails.releaseDateLte,
-        certification: reduxDetails.certifications.join("|"),
-        "vote_average.gte": reduxDetails.voteAverageGte,
-        "vote_average.lte": reduxDetails.voteAverageLte,
-        "with_runtime.gte": reduxDetails.runtimeGte,
-        "with_runtime.lte": reduxDetails.runtimeLte,
+        sort_by: parameters.sort,
+        watch_region: parameters.country,
+        with_watch_providers: parameters.WatchProviders.replace(/,/g, "|"),
+        "release_date.gte": parameters.releaseDateGte,
+        "release_date.lte": parameters.releaseDateLte,
+        certification: parameters.certifications.replace(/,/g, "|"),
+        "vote_average.gte": parameters.voteAverageGte,
+        "vote_average.lte": parameters.voteAverageLte,
+        "with_runtime.gte": parameters.runtimeGte,
+        "with_runtime.lte": parameters.runtimeLte,
       };
-
-      // if (reduxDetails.genres !== "") {
-      //   params.with_genres = reduxDetails.genres.join(",");
-      // }
-      if (reduxDetails.voteCountGte !== "") {
+      if (parameters.genres !== "") {
+        params.with_genres = parameters.genres;
+      }
+      if (parameters.voteCountGte !== "") {
         params["vote_count.lte"] = 0;
-        params["vote_count.gte"] = reduxDetails.voteCountGte;
+        params["vote_count.gte"] = parameters.voteCountGte;
       }
       await axios.get(endPoint, { params }).then((res) => {
         setLoader(false);
@@ -90,6 +112,36 @@ function mainContainer() {
 
   return (
     <>
+      {/* Display selected filters as chips */}
+      <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 font-poppins">
+        {Object.entries(selectedFilters).map(([filterType, filterValue]) =>
+          Array.isArray(filterValue)
+            ? filterValue.map((value) => (
+                <div
+                  key={`${filterType}-${value}`}
+                  className="text-center text-sm transition-colors flex justify-between p-2 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 px-4"
+                  onClick={() => handleFilterToggle(filterType, value)}
+                >
+                  <div>{value}</div>
+                  <div className="font-bold">
+                    <XMarkIcon className="h-5 w-5" />
+                  </div>
+                </div>
+              ))
+            : filterValue !== "" && (
+                <div
+                  key={`${filterType}-${filterValue}`}
+                  className="text-center text-sm transition-colors flex justify-between p-2 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 px-4"
+                  onClick={() => handleFilterToggle(filterType, "")}
+                >
+                  <div>{filterValue}</div>
+                  <div className="font-bold">
+                    <XMarkIcon className="h-5 w-5" />
+                  </div>
+                </div>
+              )
+        )}
+      </div>
       {loader === true ? (
         <>
           <div className="flex justify-center h-screen items-center">
@@ -109,36 +161,6 @@ function mainContainer() {
         </>
       ) : (
         <>
-          {/* Display selected filters as chips */}
-          <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 font-poppins">
-            {Object.entries(selectedFilters).map(([filterType, filterValue]) =>
-              Array.isArray(filterValue)
-                ? filterValue.map((value) => (
-                    <div
-                      key={`${filterType}-${value}`}
-                      className="text-center text-sm transition-colors flex justify-between p-2 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 px-4"
-                      onClick={() => handleFilterToggle(filterType, value)}
-                    >
-                      <div>{value}</div>
-                      <div className="font-bold">
-                        <XMarkIcon className="h-5 w-5" />
-                      </div>
-                    </div>
-                  ))
-                : filterValue !== "" && (
-                    <div
-                      key={`${filterType}-${filterValue}`}
-                      className="text-center text-sm transition-colors flex justify-between p-2 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 px-4"
-                      onClick={() => handleFilterToggle(filterType, "")}
-                    >
-                      <div>{filterValue}</div>
-                      <div className="font-bold">
-                        <XMarkIcon className="h-5 w-5" />
-                      </div>
-                    </div>
-                  )
-            )}
-          </div>
           <div
             className={`grid grid-cols-5 gap-4 absolute w-3/6 pl-12 mt-32 font-poppins`}
           >

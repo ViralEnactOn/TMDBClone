@@ -22,7 +22,6 @@ function filters() {
   const [userScore, setUserScore] = useState([0, 50]);
   const [minUserScore, setMinUserScore] = useState(250);
   const [runTime, setRunTime] = useState([0, 100]);
-  console.log("selectedGenres", selectedGenres);
   // Open / Close
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
@@ -62,9 +61,8 @@ function filters() {
 
   const handleGenresSelected = (id, name) => {
     let updatedSelectedGenres;
-
-    if (selectedGenres.some((genre) => genre.id === id)) {
-      updatedSelectedGenres = selectedGenres.filter((genre) => genre.id !== id);
+    if (selectedGenres.includes(id)) {
+      updatedSelectedGenres = selectedGenres.filter((genre) => genre !== id);
     } else {
       // updatedSelectedGenres = [...selectedGenres, [id, name]];
       updatedSelectedGenres = [...selectedGenres, id];
