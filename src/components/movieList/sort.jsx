@@ -31,7 +31,7 @@ function sort() {
 
   const handleSelectedChange = (value) => {
     setSelected(value);
-    store.dispatch({ type: "UPDATE_SORT", payload: value.value });
+    store.dispatch({ type: "UPDATE_SORT", payload: value });
   };
 
   return (

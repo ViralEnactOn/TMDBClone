@@ -58,10 +58,10 @@ function mainContainer() {
   };
 
   useEffect(() => {
-    // console.log("reduxDetails", reduxDetails);
-    handleParams();
-    extractURLParameters();
-    handleMovie();
+    console.log("reduxDetails", reduxDetails);
+    // handleParams();
+    // extractURLParameters();
+    // handleMovie();
   }, [reduxDetails]);
 
   const handleMovie = async () => {
@@ -106,24 +106,29 @@ function mainContainer() {
 
   // Object.entries(selectedFilters).map(([filterType, filterValue]) =>
   //   Array.isArray(filterValue)
-  //     ? filterValue.map((value) => console.log("is Array", value))
-  //     : filterValue !== "" && console.log("value", filterType, filterValue)
+  //     ? filterValue.map((value) => console.log("value", value.name))
+  //     : filterValue !== "" &&
+  //       console.log(
+  //         " is Array",
+  //         filterType,
+  //         filterValue.name ? filterValue.name : filterValue
+  //       )
   // );
 
   return (
     <>
       {/* Display selected filters as chips */}
-      <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 font-poppins">
+      <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 font-poppins items-center">
         {Object.entries(selectedFilters).map(([filterType, filterValue]) =>
           Array.isArray(filterValue)
             ? filterValue.map((value) => (
                 <div
                   key={`${filterType}-${value}`}
-                  className="text-center text-sm transition-colors flex justify-between p-2 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 px-4"
+                  className="items-center text-center text-sm transition-colors flex justify-between p-2 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 px-4"
                   onClick={() => handleFilterToggle(filterType, value)}
                 >
-                  <div>{value}</div>
-                  <div className="font-bold">
+                  <div>{value.name}</div>
+                  <div className="font-bold self-center">
                     <XMarkIcon className="h-5 w-5" />
                   </div>
                 </div>
@@ -131,11 +136,11 @@ function mainContainer() {
             : filterValue !== "" && (
                 <div
                   key={`${filterType}-${filterValue}`}
-                  className="text-center text-sm transition-colors flex justify-between p-2 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 px-4"
+                  className="items-center text-center text-sm transition-colors flex justify-between p-2 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 px-4"
                   onClick={() => handleFilterToggle(filterType, "")}
                 >
-                  <div>{filterValue}</div>
-                  <div className="font-bold">
+                  <div>{filterValue.name ? filterValue.name : filterValue}</div>
+                  <div className="font-bold self-center">
                     <XMarkIcon className="h-5 w-5" />
                   </div>
                 </div>
@@ -228,13 +233,13 @@ function mainContainer() {
           </div>
         </>
       )}
-      {movie.length === 0 && (
+      {/* {movie.length === 0 && (
         <>
           <div className="flex justify-start pl-12 pt-12 font-poppins text-gray-400">
             No items were found that match your query.
           </div>
         </>
-      )}
+      )} */}
     </>
   );
 }

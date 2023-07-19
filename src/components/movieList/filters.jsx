@@ -29,19 +29,39 @@ function filters() {
 
   // Handle Set From Date
   const handleFromDate = (event) => {
+    let dateObj = new Date(event);
+    let formattedDate = dateObj.toLocaleDateString("en-US", {
+      month: "long",
+      day: "2-digit",
+      year: "numeric",
+    });
+    let updatedDate = {
+      name: formattedDate,
+      value: event,
+    };
     setFromDate(event);
     store.dispatch({
       type: "UPDATE_RELEASE_DATE_GTE",
-      payload: event,
+      payload: updatedDate,
     });
   };
 
   // Handle Set To Date
   const handleToDate = (event) => {
+    let dateObj = new Date(event);
+    let formattedDate = dateObj.toLocaleDateString("en-US", {
+      month: "long",
+      day: "2-digit",
+      year: "numeric",
+    });
+    let updatedDate = {
+      name: formattedDate,
+      value: event,
+    };
     setToDate(event);
     store.dispatch({
       type: "UPDATE_RELEASE_DATE_LTE",
-      payload: event,
+      payload: updatedDate,
     });
   };
   // Get Genres
@@ -59,13 +79,15 @@ function filters() {
     handleGenres();
   }, []);
 
+  // Handle Selected Genres
   const handleGenresSelected = (id, name) => {
     let updatedSelectedGenres;
-    if (selectedGenres.includes(id)) {
-      updatedSelectedGenres = selectedGenres.filter((genre) => genre !== id);
+    if (selectedGenres.some((genres) => genres.value === id)) {
+      updatedSelectedGenres = selectedGenres.filter(
+        (genre) => genre.value !== id
+      );
     } else {
-      // updatedSelectedGenres = [...selectedGenres, [id, name]];
-      updatedSelectedGenres = [...selectedGenres, id];
+      updatedSelectedGenres = [...selectedGenres, { name: name, value: id }];
     }
     setSelectedGenres(updatedSelectedGenres);
     store.dispatch({
@@ -74,15 +96,20 @@ function filters() {
     });
   };
 
-  // Handle Certification Selected
-  const handleCertificationSelected = (value) => {
+  // Handle Selected Certification
+  const handleCertificationSelected = (id) => {
     let updatedSelectedCertification;
-    if (selectedCertification.includes(value)) {
+    if (
+      selectedCertification.some((certification) => certification.value !== id)
+    ) {
       updatedSelectedCertification = selectedCertification.filter(
-        (v) => v !== value
+        (v) => v.value !== id
       );
     } else {
-      updatedSelectedCertification = [...selectedCertification, value];
+      updatedSelectedCertification = [
+        ...selectedCertification,
+        { name: id, value: id },
+      ];
     }
     setSelectedCertification(updatedSelectedCertification);
     store.dispatch({
@@ -179,7 +206,9 @@ function filters() {
                       <div
                         onClick={() => handleGenresSelected(name.id, name.name)}
                         className={
-                          selectedGenres.includes(name.id)
+                          selectedGenres.some(
+                            (selected) => selected.value === name.id
+                          )
                             ? "selected p-1 hover:bg-white hover:text-black rounded-l-full rounded-r-full border-solid border-2 transition-colors"
                             : "p-1 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2  transition-colors"
                         }
@@ -206,7 +235,9 @@ function filters() {
                       <div
                         onClick={() => handleCertificationSelected(name)}
                         className={
-                          selectedCertification.includes(name)
+                          selectedCertification.some(
+                            (name) => name.value === name
+                          )
                             ? "selected p-1 hover:bg-white hover:text-black rounded-l-full rounded-r-full border-solid border-2 transition-colors"
                             : "p-1 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 transition-colors"
                         }

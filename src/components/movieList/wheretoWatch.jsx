@@ -25,8 +25,12 @@ function wheretoWatch() {
     setIsOpen(!isOpen);
   };
 
-  const handleWatchProvider = async (value) => {
-    store.dispatch({ type: "UPDATE_COUNTRY", payload: value.iso_3166_1 });
+  const handleWatchCountry = async (value) => {
+    let updatedSelectCountry = {
+      name: value.english_name,
+      value: value.iso_3166_1,
+    };
+    store.dispatch({ type: "UPDATE_COUNTRY", payload: updatedSelectCountry });
     setSelected(value);
     const endPoint = APIURL + "watch/providers/movie";
     const params = {
@@ -47,13 +51,15 @@ function wheretoWatch() {
       setRegion(res.data.results);
     });
   };
-
-  const handleSelectedWatchProvier = (value) => {
+  const handleSelectedWatchProvier = (id, name) => {
     let updatedSelectedProvider;
-    if (selectedProvider.includes(value)) {
-      updatedSelectedProvider = selectedProvider.filter((v) => v !== value);
+    if (selectedProvider.some((provider) => provider.value === id)) {
+      updatedSelectedProvider = selectedProvider.filter((v) => v.value !== id);
     } else {
-      updatedSelectedProvider = [...selectedProvider, value];
+      updatedSelectedProvider = [
+        ...selectedProvider,
+        { name: name, value: id },
+      ];
     }
     setSelectedProvider(updatedSelectedProvider);
     store.dispatch({
@@ -84,7 +90,7 @@ function wheretoWatch() {
           <div className="top-16 w-72 ">
             <Listbox
               value={selected}
-              onChange={(value) => handleWatchProvider(value)}
+              onChange={(value) => handleWatchCountry(value)}
             >
               <div className="relative mt-1 ">
                 <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -168,17 +174,25 @@ function wheretoWatch() {
                         />
                         <div
                           onClick={() =>
-                            handleSelectedWatchProvier(name.provider_id)
+                            handleSelectedWatchProvier(
+                              name.provider_id,
+                              name.provider_name
+                            )
                           }
                           className={
-                            selectedProvider.includes(name.provider_id)
+                            selectedProvider.some(
+                              (selected) => selected.value === name.provider_id
+                            )
                               ? "absolute inset-0 selected hover:bg-white rounded-lg transition-colors opacity-70 flex items-center justify-center"
                               : "absolute inset-0 hover:bg-blue-300  rounded-lg transition-colors opacity-70"
                           }
                         >
                           <div
                             className={
-                              selectedProvider.includes(name.provider_id)
+                              selectedProvider.some(
+                                (selected) =>
+                                  selected.value === name.provider_id
+                              )
                                 ? "flex items-center justify-center"
                                 : "hidden"
                             }
