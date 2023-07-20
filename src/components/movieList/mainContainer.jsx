@@ -23,7 +23,7 @@ function mainContainer() {
   const [movie, setMovie] = useState([]);
   const [loader, setLoader] = useState(true);
   const selectedFilters = useSelector((state) => state.example);
-  const [topMargin, setTopMargin] = useState(40);
+  // const [topMargin, setTopMargin] = useState(40);
   const parameters = {};
   // Fetch URL Params
   const extractURLParameters = () => {
@@ -48,20 +48,39 @@ function mainContainer() {
   };
 
   // Set Params
-  const handleParams = () => {
-    const queryParams = new URLSearchParams(location.search);
-    for (const key in selectedFilters) {
-      queryParams.set(key, selectedFilters[key]);
+  const handleParams = (obj) => {
+    let parts = [];
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        if (Array.isArray(value)) {
+          // Handling array values
+          if (value.length > 0) {
+            const encodedValues = value.map((item) =>
+              encodeURIComponent(item.value)
+            );
+            parts.push(`${encodeURIComponent(key)}=${encodedValues.join(",")}`);
+          }
+        } else if (typeof value === "object" && value !== null) {
+          // Handling object values
+          parts.push(
+            `${encodeURIComponent(key)}=${encodeURIComponent(value.value)}`
+          );
+        } else {
+          // Handling other values
+          parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+        }
+      }
     }
-    const newUrl = `${location.pathname}?${queryParams.toString()}`;
+    const newUrl = `${location.pathname}?${parts.join("&").toString()}`;
     window.history.replaceState(null, "", newUrl);
   };
 
   useEffect(() => {
-    console.log("reduxDetails", reduxDetails);
-    // handleParams();
-    // extractURLParameters();
-    // handleMovie();
+    // console.log("reduxDetails", reduxDetails);
+    handleParams(selectedFilters);
+    extractURLParameters();
+    handleMovie();
   }, [reduxDetails]);
 
   const handleMovie = async () => {
@@ -166,9 +185,7 @@ function mainContainer() {
         </>
       ) : (
         <>
-          <div
-            className={`grid grid-cols-5 gap-4 absolute w-3/6 pl-12 mt-32 font-poppins`}
-          >
+          <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 mt-32 font-poppins">
             {movie.length !== 0 &&
               movie.map((item, index) => {
                 let dateObj = new Date(item.release_date);

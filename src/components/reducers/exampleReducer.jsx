@@ -1,7 +1,7 @@
 const initialState = {
   sort: { name: "Popularity Descending", value: "popularity.desc" },
   country: { name: "India", value: "IN" },
-  WatchProviders: [],
+  WatchProviders: "",
   releaseDateGte: "",
   releaseDateLte: "",
   genres: "",

@@ -69,7 +69,6 @@ function movieDetail() {
                     const genres = item.genres.map((item) => item.name);
                     const genresString = genres.join(", ");
 
-                    console.log("movieDetail", item);
                     return (
                       <>
                         <div className="relative">

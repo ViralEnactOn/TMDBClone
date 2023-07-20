@@ -100,7 +100,7 @@ function filters() {
   const handleCertificationSelected = (id) => {
     let updatedSelectedCertification;
     if (
-      selectedCertification.some((certification) => certification.value !== id)
+      selectedCertification.some((certification) => certification.value === id)
     ) {
       updatedSelectedCertification = selectedCertification.filter(
         (v) => v.value !== id
@@ -121,6 +121,7 @@ function filters() {
   // Handle User Score
   const handleChangeUserScore = (value) => {
     setUserScore(value);
+
     store.dispatch({
       type: "UPDATE_VOTE_AVERAGE",
       payload: value,
@@ -231,12 +232,15 @@ function filters() {
               certification.map((name, index) => {
                 return (
                   <>
-                    <div className="text-center text-sm transition-colors">
+                    <div
+                      className="text-center text-sm transition-colors"
+                      key={index}
+                      onClick={() => handleCertificationSelected(name)}
+                    >
                       <div
-                        onClick={() => handleCertificationSelected(name)}
                         className={
                           selectedCertification.some(
-                            (name) => name.value === name
+                            (selected) => selected.value === name
                           )
                             ? "selected p-1 hover:bg-white hover:text-black rounded-l-full rounded-r-full border-solid border-2 transition-colors"
                             : "p-1 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 transition-colors"
@@ -289,9 +293,7 @@ function filters() {
           </div>
 
           {/* Runtime */}
-          <div className="border-t-2 mt-3 pt-2 text-gray-400">
-            Minimum User Votes
-          </div>
+          <div className="border-t-2 mt-3 pt-2 text-gray-400">Runtime</div>
           <div className="p-3 mt-3">
             <RangeSlider
               value={runTime}
