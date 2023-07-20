@@ -11,6 +11,7 @@ const initialState = {
   voteCountGte: "",
   runtimeGte: "",
   runtimeLte: "",
+  userDetails: "",
 };
 
 const exampleReducer = (state = initialState, action) => {
@@ -74,6 +75,11 @@ const exampleReducer = (state = initialState, action) => {
       return {
         ...state,
         ...action.payload,
+      };
+    case "UPDATE_USERDETAILS":
+      return {
+        ...state,
+        userDetails: action.payload,
       };
     default:
       return state;

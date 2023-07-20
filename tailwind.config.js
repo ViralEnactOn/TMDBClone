@@ -9,7 +9,8 @@ export default {
       colors: {
         blue: {
           300: '#01b4e4',
-          500: '#032541'
+          500: '#032541',
+          200: '#7AD7F0'
         }
       },
       height: {

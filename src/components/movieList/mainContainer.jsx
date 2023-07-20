@@ -76,6 +76,7 @@ function mainContainer() {
   };
 
   useEffect(() => {
+    console.log("reduxDetails", reduxDetails);
     handleParams(selectedFilters);
     extractURLParameters();
     handleMovie();
@@ -199,7 +200,7 @@ function mainContainer() {
                     });
                     return (
                       <>
-                        <Link to={`movie/${item.id}`}>
+                        <Link to={`/${item.id}`}>
                           <div
                             key={index}
                             className="h-90 rounded-lg border-solid border-2 "
