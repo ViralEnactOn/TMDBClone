@@ -23,8 +23,8 @@ function mainContainer() {
   const [movie, setMovie] = useState([]);
   const [loader, setLoader] = useState(true);
   const selectedFilters = useSelector((state) => state.example);
-  // const [topMargin, setTopMargin] = useState(40);
   const parameters = {};
+
   // Fetch URL Params
   const extractURLParameters = () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -77,7 +77,6 @@ function mainContainer() {
   };
 
   useEffect(() => {
-    // console.log("reduxDetails", reduxDetails);
     handleParams(selectedFilters);
     extractURLParameters();
     handleMovie();
@@ -122,17 +121,6 @@ function mainContainer() {
       console.log("Error fetching data:", error);
     }
   };
-
-  // Object.entries(selectedFilters).map(([filterType, filterValue]) =>
-  //   Array.isArray(filterValue)
-  //     ? filterValue.map((value) => console.log("value", value.name))
-  //     : filterValue !== "" &&
-  //       console.log(
-  //         " is Array",
-  //         filterType,
-  //         filterValue.name ? filterValue.name : filterValue
-  //       )
-  // );
 
   return (
     <>
@@ -185,78 +173,68 @@ function mainContainer() {
         </>
       ) : (
         <>
-          <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 mt-32 font-poppins">
-            {movie.length !== 0 &&
-              movie.map((item, index) => {
-                let dateObj = new Date(item.release_date);
-                let formattedDate = dateObj.toLocaleDateString("en-US", {
-                  month: "long",
-                  day: "2-digit",
-                  year: "numeric",
-                });
-                return (
-                  <>
-                    <Link to={`movie/${item.id}`}>
-                      <div
-                        key={index}
-                        className="h-90 rounded-lg border-solid border-2 "
-                      >
-                        {lazyLoading === true ? (
-                          <>
-                            <Skeleton height={245} />
-                          </>
-                        ) : (
-                          <>
-                            <img
-                              src={
-                                item.poster_path
-                                  ? IMAGEURL + item.poster_path
-                                  : IMAGEURL + item.backdrop_path
-                              }
-                              alt={item.original_title}
-                              className="rounded-t-lg h-60 w-full"
-                            />
-                          </>
-                        )}
-                        <div className="p-2 ">
-                          {/* <div className="text-center w-11 h-10">
-                        <CircularProgressbar
-                          strokeWidth={6}
-                          value={
-                            item.vote_average ? item.vote_average * 10 : ""
-                          }
-                          text={`${
-                            item.vote_average ? item.vote_average * 10 : ""
-                          }%`}
-                          styles={buildStyles({
-                            pathColor: "#03AC13",
-                            trailColor: "lightgray",
-                            textSize: "30px",
-                          })}
-                        />
-                      </div> */}
-                          <div className="font-semibold text-sm mt-2">
-                            {item.original_title ? item.original_title : ""}
+          {movie.length === 0 ? (
+            <>
+              <div className="flex justify-center pl-12 h-screen font-poppins text-gray-400">
+                <div className="self-center">
+                  No items were found that match your query.
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {" "}
+              <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 mt-32 font-poppins">
+                {movie.length !== 0 &&
+                  movie.map((item, index) => {
+                    let dateObj = new Date(item.release_date);
+                    let formattedDate = dateObj.toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "2-digit",
+                      year: "numeric",
+                    });
+                    return (
+                      <>
+                        <Link to={`movie/${item.id}`}>
+                          <div
+                            key={index}
+                            className="h-90 rounded-lg border-solid border-2 "
+                          >
+                            {lazyLoading === true ? (
+                              <>
+                                <Skeleton height={245} />
+                              </>
+                            ) : (
+                              <>
+                                <img
+                                  src={
+                                    item.poster_path
+                                      ? IMAGEURL + item.poster_path
+                                      : IMAGEURL + item.backdrop_path
+                                  }
+                                  alt={item.original_title}
+                                  className="rounded-t-lg h-60 w-full"
+                                />
+                              </>
+                            )}
+                            <div className="p-2 ">
+                              <div className="font-semibold text-sm mt-2">
+                                {item.original_title ? item.original_title : ""}
+                              </div>
+                              <div className="mt-1 text-xs">
+                                {formattedDate ? formattedDate : ""}
+                              </div>
+                            </div>
                           </div>
-                          <div className="mt-1 text-xs">
-                            {formattedDate ? formattedDate : ""}
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </>
-                );
-              })}
-          </div>
+                        </Link>
+                      </>
+                    );
+                  })}
+              </div>
+            </>
+          )}
         </>
       )}
-      {/* {movie.length === 0 && (
-        <>
-          <div className="flex justify-start pl-12 pt-12 font-poppins text-gray-400">
-            No items were found that match your query.
-          </div>
-        </>
-      )} */}
     </>
   );
 }
