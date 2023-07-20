@@ -6,7 +6,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { APIURL, Header, IMAGEURL } from "../config/config";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import store from "../store/store";
 import { ThreeCircles } from "react-loader-spinner";
@@ -94,10 +93,16 @@ function mainContainer() {
         include_video: false,
         sort_by: parameters.sort,
         watch_region: parameters.country,
-        with_watch_providers: parameters.WatchProviders.replace(/,/g, "|"),
+        with_watch_providers:
+          parameters.WatchProviders === undefined
+            ? ""
+            : parameters.WatchProviders.replace(/,/g, "|"),
         "release_date.gte": parameters.releaseDateGte,
         "release_date.lte": parameters.releaseDateLte,
-        certification: parameters.certifications.replace(/,/g, "|"),
+        certification:
+          parameters.certification === undefined
+            ? ""
+            : parameters.certifications.replace(/,/g, "|"),
         "vote_average.gte": parameters.voteAverageGte,
         "vote_average.lte": parameters.voteAverageLte,
         "with_runtime.gte": parameters.runtimeGte,
@@ -183,7 +188,6 @@ function mainContainer() {
             </>
           ) : (
             <>
-              {" "}
               <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 mt-32 font-poppins">
                 {movie.length !== 0 &&
                   movie.map((item, index) => {

@@ -25,10 +25,13 @@ const people = [
 function sort() {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(people[0]);
+
+  // Hadle open / close
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
   };
 
+  // Handle Selected filter
   const handleSelectedChange = (value) => {
     setSelected(value);
     store.dispatch({ type: "UPDATE_SORT", payload: value });

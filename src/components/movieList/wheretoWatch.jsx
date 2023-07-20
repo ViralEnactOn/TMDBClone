@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import { APIURL, Header, IMAGEURL } from "../config/config";
 import store from "../store/store";
+import { ThreeCircles } from "react-loader-spinner";
 axios.defaults.headers.common = Header;
 
 function wheretoWatch() {
@@ -19,29 +20,33 @@ function wheretoWatch() {
   const [isOpen, setIsOpen] = useState(false);
   const [region, setRegion] = useState([]);
   const [selectedProvider, setSelectedProvider] = useState([]);
-  const [selected, setSelected] = useState(reduxValue.country);
+  const [selected, setSelected] = useState(reduxValue.country.name);
   const [watchProvider, setWatchProvider] = useState([]);
+
+  // Filter open / close
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
   };
 
+  // Select Country
   const handleWatchCountry = async (value) => {
     let updatedSelectCountry = {
-      name: value.english_name,
-      value: value.iso_3166_1,
+      name: value.english_name ? value.english_name : "India",
+      value: value.iso_3166_1 ? value.iso_3166_1 : "IN",
     };
     store.dispatch({ type: "UPDATE_COUNTRY", payload: updatedSelectCountry });
     setSelected(value);
     const endPoint = APIURL + "watch/providers/movie";
     const params = {
       language: "en-US",
-      watch_region: value.iso_3166_1,
+      watch_region: value.iso_3166_1 || "IN",
     };
     await axios.get(endPoint, { params }).then((res) => {
       setWatchProvider(res.data.results);
     });
   };
 
+  // Fetch All Region
   const handleRegion = async () => {
     const endPoint = APIURL + "watch/providers/regions";
     const params = {
@@ -51,6 +56,8 @@ function wheretoWatch() {
       setRegion(res.data.results);
     });
   };
+
+  // Select watch provider
   const handleSelectedWatchProvier = (id, name) => {
     let updatedSelectedProvider;
     if (selectedProvider.some((provider) => provider.value === id)) {
@@ -70,7 +77,9 @@ function wheretoWatch() {
 
   useEffect(() => {
     handleRegion();
+    handleWatchCountry("India");
   }, []);
+
   return (
     <div className="p-3 bg-white rounded-lg mt-5 drop-shadow-2xl">
       <div className="flex justify-between" onClick={() => handleIsOpen()}>
@@ -95,7 +104,7 @@ function wheretoWatch() {
               <div className="relative mt-1 ">
                 <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                   <span className="block truncate">
-                    {selected.english_name}
+                    {selected.english_name ? selected.english_name : selected}
                   </span>
                   <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                     <ChevronUpDownIcon
@@ -151,15 +160,26 @@ function wheretoWatch() {
           </div>
 
           {/* Select Watch Provider */}
-          <div className="grid grid-cols-4 gap-4 mt-5">
-            {watchProvider.length === 0 ? (
-              <>
-                {/* <div className="flex self-center">
-                  <CircularProgress />
-                </div> */}
-              </>
-            ) : (
-              <>
+          {watchProvider.length === 0 ? (
+            <>
+              <div className="flex justify-center mt-5">
+                <ThreeCircles
+                  height="30"
+                  width="30"
+                  color="#4fa94d"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                  ariaLabel="three-circles-rotating"
+                  outerCircleColor=""
+                  innerCircleColor=""
+                  middleCircleColor=""
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-4 gap-4 mt-5">
                 {watchProvider.map((name, index) => {
                   return (
                     <>
@@ -204,9 +224,9 @@ function wheretoWatch() {
                     </>
                   );
                 })}
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </>
       )}
     </div>
