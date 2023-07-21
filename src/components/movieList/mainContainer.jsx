@@ -12,7 +12,7 @@ import { ThreeCircles } from "react-loader-spinner";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import * as solid from "@heroicons/react/20/solid";
 import { useSelector } from "react-redux";
 axios.defaults.headers.common = Header;
 
@@ -128,12 +128,33 @@ function mainContainer() {
     }
   };
 
+  // Object.entries(selectedFilters).map(([filterType, filterValue]) => {
+  //   if (filterType === "userDetails") {
+  //     // Skip mapping for userDetail array
+  //     return;
+  //   }
+
+  //   // Continue with the mapping for other filter types
+  //   if (Array.isArray(filterValue)) {
+  //     filterValue.map((value) => console.log("value", value));
+  //   } else if (filterValue !== "") {
+  //     console.log(
+  //       " is Array",
+  //       filterType,
+  //       filterValue.name ? filterValue.name : filterValue
+  //     );
+  //   }
+  // });
+
   return (
     <>
       {/* Display selected filters as chips */}
       <div className="grid grid-cols-5 gap-4 absolute w-3/6 pl-12 font-poppins items-center">
-        {Object.entries(selectedFilters).map(([filterType, filterValue]) =>
-          Array.isArray(filterValue)
+        {Object.entries(selectedFilters).map(([filterType, filterValue]) => {
+          if (filterType === "userDetails") {
+            return null;
+          }
+          return Array.isArray(filterValue)
             ? filterValue.map((value) => (
                 <div
                   key={`${filterType}-${value}`}
@@ -142,7 +163,7 @@ function mainContainer() {
                 >
                   <div>{value.name}</div>
                   <div className="font-bold self-center">
-                    <XMarkIcon className="h-5 w-5" />
+                    <solid.XMarkIcon className="h-5 w-5" />
                   </div>
                 </div>
               ))
@@ -154,11 +175,11 @@ function mainContainer() {
                 >
                   <div>{filterValue.name ? filterValue.name : filterValue}</div>
                   <div className="font-bold self-center">
-                    <XMarkIcon className="h-5 w-5" />
+                    <solid.XMarkIcon className="h-5 w-5" />
                   </div>
                 </div>
-              )
-        )}
+              );
+        })}
       </div>
       {loader === true ? (
         <>
