@@ -3,6 +3,7 @@ import Login from "./components/login/login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/Protected Route/proctectedRoute";
 import MovieDetail from "./components/movieDetail/movieDetail";
+import TestFunction from "./components/testFunction/testFunction";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/:id" element={<MovieDetail />} />
         </Route>
         <Route path="/" element={<Login />} />
+        <Route path="/function" element={<TestFunction />} />
       </Routes>
     </BrowserRouter>
   );
