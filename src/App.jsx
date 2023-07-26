@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/Protected Route/proctectedRoute";
 import MovieDetail from "./components/movieDetail/movieDetail";
 import TestFunction from "./components/testFunction/testFunction";
+import ReactDocs from "./components/reactDocs/reactDocs";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         </Route>
         <Route path="/" element={<Login />} />
         <Route path="/function" element={<TestFunction />} />
+        <Route path="/react" element={<ReactDocs />} />
       </Routes>
     </BrowserRouter>
   );
