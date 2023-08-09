@@ -14,18 +14,18 @@ import { connect } from "react-redux";
 function movieList() {
   return (
     <>
-      <main className="min-w-max flex justify-center bg-#000 font-poppins">
-        <div className="container">
-          <div className="flex min-h-screen mt-20">
+      <main className="min-w-max flex justify-center bg-#000 font-poppins flex-shrink-0">
+        <div className="container ">
+          <div className="grid grid-cols-12 mt-10">
             {/* Sidebar */}
-            <div className="w-1/5 flex flex-col ">
+            <div className="col-span-12  md:col-span-3 xs:col-span-12">
               <div className="font-semibold text-xl">Popular Movie</div>
               <SortComponent />
               <WheretoWatchComponent />
               <FiltersComponent />
             </div>
             {/* Main Component */}
-            <div className="w-4/5">
+            <div className="col-span-9 md:col-span-9 xs:col-span-12">
               <MainContainerComponent />
             </div>
           </div>

@@ -26,7 +26,7 @@ function sort() {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(people[0]);
 
-  // Hadle open / close
+  // Handle open / close
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
   };
@@ -38,8 +38,8 @@ function sort() {
   };
 
   return (
-    <div className="relative p-3 bg-white rounded-lg mt-5 drop-shadow-2xl">
-      <div className="flex justify-between" onClick={() => handleIsOpen()}>
+    <div className="relative p-3 bg-white rounded-lg mt-5 drop-shadow-2xl ">
+      <div className="flex justify-between " onClick={() => handleIsOpen()}>
         <div className="font-semibold">Sort</div>
         <div className="flex">
           {isOpen ? (
@@ -55,7 +55,7 @@ function sort() {
             Sort Results By
           </div>
 
-          <div className="top-16 w-72">
+          <div className="top-16">
             <Listbox
               value={selected}
               onChange={(value) => {
@@ -63,8 +63,10 @@ function sort() {
               }}
             >
               <div className="relative mt-1 ">
-                <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                  <span className="block truncate">{selected.name}</span>
+                <Listbox.Button className="w-full relative cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                  <span className="block truncate  text-sm">
+                    {selected.name}
+                  </span>
                   <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                     <ChevronUpDownIcon
                       className="h-5 w-5 text-gray-400"
@@ -78,12 +80,12 @@ function sort() {
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className=" mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  <Listbox.Options className=" text-sm  mt-1 max-h-60  overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     {people.map((person, personIdx) => (
                       <Listbox.Option
                         key={personIdx}
                         className={({ active }) =>
-                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                          `relative cursor-default select-none py-2 pl-10  ${
                             active
                               ? "bg-amber-100 text-amber-900"
                               : "text-gray-900"
@@ -94,7 +96,7 @@ function sort() {
                         {({ selected }) => (
                           <>
                             <span
-                              className={`block truncate ${
+                              className={` ${
                                 selected ? "font-medium" : "font-normal"
                               }`}
                             >

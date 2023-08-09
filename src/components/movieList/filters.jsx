@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
-import { APIURL, Header, IMAGEURL } from "../config/config";
+import { API_URL, Header, IMAGE_URL } from "../config/config";
 import axios from "axios";
 import { connect } from "react-redux";
 import store from "../store/store";
@@ -66,7 +66,7 @@ function filters() {
   };
   // Get Genres
   const handleGenres = async () => {
-    const endPoint = APIURL + "genre/movie/list";
+    const endPoint = API_URL + "genre/movie/list";
     const params = {
       language: "en",
     };
@@ -152,7 +152,7 @@ function filters() {
 
   return (
     <div className="p-3 bg-white rounded-lg mt-5 drop-shadow-2xl">
-      <div className="flex justify-between" onClick={() => handleIsOpen()}>
+      <div className="flex justify-between " onClick={() => handleIsOpen()}>
         <div className="font-semibold">Filters</div>
         <div className="flex">
           {isOpen ? (
