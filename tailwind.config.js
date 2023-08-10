@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        poppins: ['"Poppins", sans-serif'],
+        poppins: ['"arial", sans-serif'],
       },
       colors: {
         blue: {
@@ -20,8 +20,8 @@ export default {
       screens: {
         s: "0px",
         xs: "200px",
-        xl: "1240px",
         lg: "1040px",
+        xl: "1240px",
       },
       container: {
         screens: {

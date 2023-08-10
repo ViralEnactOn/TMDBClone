@@ -195,7 +195,7 @@ function filters() {
 
           {/* Genres */}
           <div className="border-t-2 mt-3 pt-2 text-gray-400">Genres</div>
-          <div className=" grid grid-cols-2 gap-4 mt-3 ">
+          <div className=" grid grid-cols-1 gap-2 mt-3 lg:grid-cols-2 ">
             {genres.length !== 0 &&
               genres.map((name, index) => {
                 return (
@@ -210,8 +210,8 @@ function filters() {
                           selectedGenres.some(
                             (selected) => selected.value === name.id
                           )
-                            ? "selected p-1 hover:bg-white hover:text-black rounded-l-full rounded-r-full border-solid border-2 transition-colors"
-                            : "p-1 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2  transition-colors"
+                            ? "selected p-1 hover:bg-white hover:text-black rounded-l-full rounded-r-full border-solid border-2 transition-colors text-xs"
+                            : "p-1 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2  transition-colors text-xs"
                         }
                         value={name.value}
                       >
@@ -227,7 +227,7 @@ function filters() {
           <div className="border-t-2 mt-3 pt-2 text-gray-400">
             Certification
           </div>
-          <div className="grid grid-cols-3 gap-4 mt-3">
+          <div className="grid grid-cols-3 gap-2 mt-3 ">
             {genres.length !== 0 &&
               certification.map((name, index) => {
                 return (
@@ -242,8 +242,8 @@ function filters() {
                           selectedCertification.some(
                             (selected) => selected.value === name
                           )
-                            ? "selected p-1 hover:bg-white hover:text-black rounded-l-full rounded-r-full border-solid border-2 transition-colors"
-                            : "p-1 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 transition-colors"
+                            ? "selected p-1 hover:bg-white hover:text-black rounded-l-full rounded-r-full border-solid border-2 transition-colors text-xs"
+                            : "p-1 hover:bg-blue-300 hover:text-white rounded-l-full rounded-r-full border-spacing-2 border-solid border-2 transition-colors text-xs"
                         }
                         value={name}
                       >
