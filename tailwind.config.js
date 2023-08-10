@@ -20,7 +20,7 @@ export default {
       screens: {
         s: "0px",
         xs: "200px",
-        lg: "1040px",
+        lg: "1024px",
         xl: "1240px",
       },
       container: {

@@ -253,8 +253,7 @@ function mainContainer() {
                                         <EllipsisHorizontalCircleIcon
                                           className={`${
                                             open ? "" : "text-opacity-70"
-                                          }
-                  h-5 w-5 text-gray-100 transition duration-150 ease-in-out group-hover:text-opacity-80 `}
+                                          } h-5 w-5 text-gray-100 transition duration-150 ease-in-out group-hover:text-opacity-80 `}
                                           aria-hidden="true"
                                           onClick={() => {
                                             handleImageClick(index);
