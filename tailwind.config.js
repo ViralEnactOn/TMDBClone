@@ -17,7 +17,10 @@ export default {
         90: "350px",
       },
       screens: {
-        xs: "320px",
+        xs: "200px",
+        xl: "1240px",
+        lg: "1040px",
+        
       },
       container: {
         screens: {

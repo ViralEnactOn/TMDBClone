@@ -76,7 +76,6 @@ function mainContainer() {
   };
 
   useEffect(() => {
-    console.log("reduxDetails", reduxDetails);
     handleParams(selectedFilters);
     extractURLParameters();
     handleMovie();
@@ -130,11 +129,7 @@ function mainContainer() {
   return (
     <>
       {/* Display selected filters as chips */}
-      {/* <div
-        className="grid gap-4 absolute sm:pl-12 xs:mt-5 font-poppins items-center auto-rows-fr 
-    grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 
-    xl:max-w-none 2xl:max-w-none w-fit"
-      >
+      <div className="mx-auto relative grid gap-4 xs:mt-10 md:mt-0 xs:pl-0 font-poppins sm:grid-cols-2 md:pl-12 xs:grid-flow-wrap md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 2xl:max-w-none xl:max-w-none ">
         {Object.entries(selectedFilters).map(([filterType, filterValue]) => {
           if (filterType === "userDetails") {
             return null;
@@ -167,7 +162,7 @@ function mainContainer() {
                 </div>
               );
         })}
-      </div> */}
+      </div>
 
       {loader === true ? (
         <>
@@ -198,7 +193,7 @@ function mainContainer() {
             </>
           ) : (
             <>
-              <div className="mx-auto relative  grid gap-4 mt-24 font-poppins sm:grid-cols-2 sm:pl-12 xs:grid-flow-wrap md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 2xl:max-w-none xl:max-w-none ">
+              <div className="mx-auto relative grid gap-4 mt-5 font-poppins sm:grid-cols-2 sm:pl-12 xs:grid-flow-wrap md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 2xl:max-w-none xl:max-w-none ">
                 {movie.length !== 0 &&
                   movie.map((item, index) => {
                     let dateObj = new Date(item.release_date);
@@ -207,10 +202,14 @@ function mainContainer() {
                       day: "2-digit",
                       year: "numeric",
                     });
+                    let overview = item.overview
+                      .split(" ")
+                      .slice(0, 14)
+                      .join(" ");
                     return (
                       <Link to={`/${item.id}`} key={index}>
-                        <div className=" sm:h-90 sm:w-36  rounded-lg border-solid border-2 xs:flex sm:flex-col">
-                          <div className="rounded-t-lg">
+                        <div className="rounded-lg border-solid border-2 w-[calc(100vw-32px)] flex sm:flex-col sm:h-90 sm:w-36 ">
+                          <div className="rounded-t-lg xs:w-[calc(100vw-32px)] sm:w-[140px]">
                             {lazyLoading === true ? (
                               <Skeleton height={245} />
                             ) : (
@@ -226,12 +225,15 @@ function mainContainer() {
                             )}
                           </div>
                           <div>
-                            <div className="p-2">
-                              <div className="font-semibold text-sm mt-2">
+                            <div className="p-2 ">
+                              <div className="font-semibold text-sm mt-2 xs:pl-5 sm:pl-0">
                                 {item.original_title ? item.original_title : ""}
                               </div>
-                              <div className="mt-1 text-xs">
+                              <div className="mt-1 text-xs xs:pl-5 sm:pl-0">
                                 {formattedDate ? formattedDate : ""}
+                              </div>
+                              <div className="xs:mt-5 text-sm sm:hidden xs:pl-5 ">
+                                {item.overview ? overview + "..." : ""}
                               </div>
                             </div>
                           </div>
