@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
@@ -17,10 +18,10 @@ export default {
         90: "350px",
       },
       screens: {
+        s: "0px",
         xs: "200px",
         xl: "1240px",
         lg: "1040px",
-        
       },
       container: {
         screens: {
@@ -31,5 +32,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/line-clamp")],
 };

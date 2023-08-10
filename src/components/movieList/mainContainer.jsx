@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL, Header, IMAGE_URL } from "../config/config";
+import { API_URL, Header, IMAGE_URL, MOBILE_IMAGE_URL } from "../config/config";
 import "react-circular-progressbar/dist/styles.css";
 import store from "../store/store";
 import { ThreeCircles } from "react-loader-spinner";
@@ -129,7 +129,7 @@ function mainContainer() {
   return (
     <>
       {/* Display selected filters as chips */}
-      <div className="mx-auto relative grid gap-4 xs:mt-10 md:mt-0 xs:pl-0 font-poppins sm:grid-cols-2 md:pl-12 xs:grid-flow-wrap md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 2xl:max-w-none xl:max-w-none ">
+      <div className="mx-auto relative grid gap-4 s:mt-10 md:mt-0 s:pl-0 font-poppins sm:grid-cols-2 md:pl-12 s:grid-flow-wrap md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 2xl:max-w-none xl:max-w-none ">
         {Object.entries(selectedFilters).map(([filterType, filterValue]) => {
           if (filterType === "userDetails") {
             return null;
@@ -193,7 +193,7 @@ function mainContainer() {
             </>
           ) : (
             <>
-              <div className="mx-auto relative grid gap-4 mt-5 font-poppins sm:grid-cols-2 sm:pl-12 xs:grid-flow-wrap md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 2xl:max-w-none xl:max-w-none ">
+              <div className="mx-auto relative grid gap-4 mt-5 font-poppins sm:grid-cols-2 sm:pl-12 s:grid-flow-wrap md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 2xl:max-w-none xl:max-w-none ">
                 {movie.length !== 0 &&
                   movie.map((item, index) => {
                     let dateObj = new Date(item.release_date);
@@ -202,14 +202,11 @@ function mainContainer() {
                       day: "2-digit",
                       year: "numeric",
                     });
-                    let overview = item.overview
-                      .split(" ")
-                      .slice(0, 14)
-                      .join(" ");
                     return (
-                      <Link to={`/${item.id}`} key={index}>
-                        <div className="rounded-lg border-solid border-2 w-[calc(100vw-32px)] flex sm:flex-col sm:h-90 sm:w-36 ">
-                          <div className="rounded-t-lg xs:w-[calc(100vw-32px)] sm:w-[140px]">
+                      // <Link to={`/${item.id}`} key={index}>
+                      <>
+                        <div className="rounded-lg border-solid border-2 w-[calc(100vw-32px)] flex sm:flex-col sm:h-90 sm:w-[200px] shrink s:h-25 ">
+                          <div className="rounded-t-lg s:hidden sm:block ">
                             {lazyLoading === true ? (
                               <Skeleton height={245} />
                             ) : (
@@ -220,25 +217,41 @@ function mainContainer() {
                                     : IMAGE_URL + item.backdrop_path
                                 }
                                 alt={item.original_title}
-                                className="rounded-t-lg h-60 "
+                                className="rounded-t-lg h-60 s:w-[200px]"
                               />
                             )}
                           </div>
-                          <div>
-                            <div className="p-2 ">
-                              <div className="font-semibold text-sm mt-2 xs:pl-5 sm:pl-0">
+                          <div className="flex">
+                            <div className="rounded-l-lg s:block sm:hidden flex-none">
+                              {lazyLoading === true ? (
+                                <Skeleton height={245} />
+                              ) : (
+                                <img
+                                  src={
+                                    item.poster_path
+                                      ? MOBILE_IMAGE_URL + item.poster_path
+                                      : MOBILE_IMAGE_URL + item.backdrop_path
+                                  }
+                                  alt={item.original_title}
+                                  className="rounded-l-lg h-[130px] w-[90px]"
+                                />
+                              )}
+                            </div>
+                            <div className="flex-1 p-2">
+                              <div className="font-semibold text-sm mt-2 sm:pl-0">
                                 {item.original_title ? item.original_title : ""}
                               </div>
-                              <div className="mt-1 text-xs xs:pl-5 sm:pl-0">
+                              <div className="mt-1 text-xs sm:pl-0">
                                 {formattedDate ? formattedDate : ""}
                               </div>
-                              <div className="xs:mt-5 text-sm sm:hidden xs:pl-5 ">
-                                {item.overview ? overview + "..." : ""}
+                              <div className="mt-5 text-sm line-clamp-2 sm:hidden">
+                                {item.overview ? item.overview + "..." : ""}
                               </div>
                             </div>
                           </div>
                         </div>
-                      </Link>
+                      </>
+                      // </Link>
                     );
                   })}
               </div>

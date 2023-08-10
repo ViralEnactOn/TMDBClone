@@ -18,14 +18,14 @@ function movieList() {
         <div className="container ">
           <div className="grid grid-cols-12 mt-10">
             {/* Sidebar */}
-            <div className="col-span-12  md:col-span-3 xs:col-span-12">
+            <div className="col-span-12  sm:col-span-2 xs:col-span-12">
               <div className="font-semibold text-xl">Popular Movie</div>
               <SortComponent />
               <WheretoWatchComponent />
               <FiltersComponent />
             </div>
             {/* Main Component */}
-            <div className="col-span-9 md:col-span-9 xs:col-span-12">
+            <div className="col-span-10 sm:col-span-10 xs:col-span-12">
               <MainContainerComponent />
             </div>
           </div>
