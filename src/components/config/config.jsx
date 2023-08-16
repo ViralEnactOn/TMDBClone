@@ -1,4 +1,6 @@
-export const API_URL = "https://api.themoviedb.org/3/";
+export const API_URL = "https://api.themoviedb.org/3/"; //LIVE
+export const API_URL_LOCAL = "http://localhost:3000/"; //LOCAL
+
 export const Header = {
   accept: "application/json",
   Authorization:

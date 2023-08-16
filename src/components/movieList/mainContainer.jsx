@@ -5,7 +5,13 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, Fragment } from "react";
 import axios from "axios";
-import { API_URL, Header, IMAGE_URL, MOBILE_IMAGE_URL } from "../config/config";
+import {
+  API_URL,
+  Header,
+  IMAGE_URL,
+  MOBILE_IMAGE_URL,
+  API_URL_LOCAL,
+} from "../config/config";
 import "react-circular-progressbar/dist/styles.css";
 import store from "../store/store";
 import { ThreeCircles } from "react-loader-spinner";
@@ -20,7 +26,7 @@ import {
   EllipsisHorizontalCircleIcon,
 } from "@heroicons/react/20/solid";
 
-axios.defaults.headers.common = Header;
+// axios.defaults.headers.common = Header;
 
 function mainContainer() {
   const [lazyLoading, setLazyLoading] = useState(true);
@@ -92,39 +98,43 @@ function mainContainer() {
     setLazyLoading(true);
     setLoader(true);
     try {
-      const endPoint = API_URL + "discover/movie";
+      // const endPoint = API_URL + "discover/movie";
+      const endPoint = API_URL_LOCAL + "discover/movie";
+
       const params = {
         page: 1,
-        language: "en-US",
-        include_adult: false,
-        include_video: false,
-        sort_by: parameters.sort,
-        watch_region: parameters.country,
-        with_watch_providers:
-          parameters.WatchProviders === undefined
-            ? ""
-            : parameters.WatchProviders.replace(/,/g, "|"),
-        "release_date.gte": parameters.releaseDateGte,
-        "release_date.lte": parameters.releaseDateLte,
-        certification:
-          parameters.certification === undefined
-            ? ""
-            : parameters.certifications.replace(/,/g, "|"),
-        "vote_average.gte": parameters.voteAverageGte,
-        "vote_average.lte": parameters.voteAverageLte,
-        "with_runtime.gte": parameters.runtimeGte,
-        "with_runtime.lte": parameters.runtimeLte,
+        // language: "en-US",
+        // include_adult: false,
+        // include_video: false,
+        // sort_by: parameters.sort,
+        // watch_region: parameters.country,
+        // with_watch_providers:
+        //   parameters.WatchProviders === undefined
+        //     ? ""
+        //     : parameters.WatchProviders.replace(/,/g, "|"),
+        // "release_date.gte": parameters.releaseDateGte,
+        // "release_date.lte": parameters.releaseDateLte,
+        // certification:
+        //   parameters.certification === undefined
+        //     ? ""
+        //     : parameters.certifications.replace(/,/g, "|"),
+        // "vote_average.gte": parameters.voteAverageGte,
+        // "vote_average.lte": parameters.voteAverageLte,
+        // "with_runtime.gte": parameters.runtimeGte,
+        // "with_runtime.lte": parameters.runtimeLte,
       };
-      if (parameters.genres !== "") {
-        params.with_genres = parameters.genres;
-      }
-      if (parameters.voteCountGte !== "") {
-        params["vote_count.lte"] = 0;
-        params["vote_count.gte"] = parameters.voteCountGte;
-      }
+      // if (parameters.genres !== "") {
+      //   params.with_genres = parameters.genres;
+      // }
+      // if (parameters.voteCountGte !== "") {
+      //   params["vote_count.lte"] = 0;
+      //   params["vote_count.gte"] = parameters.voteCountGte;
+      // }
       await axios.get(endPoint, { params }).then((res) => {
         setLoader(false);
-        setMovie(res.data.results);
+        // setMovie(res.data.results);
+        setMovie(res.data.data);
+
         // setTimeout(() => {
         setLazyLoading(false);
         // }, 5000);
