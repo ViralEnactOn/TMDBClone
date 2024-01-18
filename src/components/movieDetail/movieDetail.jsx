@@ -3,7 +3,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import { APIURL, Header, IMAGEURL } from "../config/config";
+import { API_URL, Header, IMAGE_URL } from "../config/config";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -25,7 +25,7 @@ function movieDetail() {
   const handleMovieDetail = async () => {
     setLoader(true);
     try {
-      const endPoint = `${APIURL}movie/${id}`;
+      const endPoint = `${API_URL}movie/${id}`;
       await axios.get(endPoint).then((res) => {
         setDetails([res.data]);
         setLoader(false);
@@ -75,7 +75,7 @@ function movieDetail() {
                           {/* Container for the backdrop image */}
                           <div className="absolute inset-0 overflow-hidden rounded-lg max-w-full max-h-full">
                             <img
-                              src={IMAGEURL + item.backdrop_path}
+                              src={IMAGE_URL + item.backdrop_path}
                               alt="Movie Poster"
                               className="ml-48 "
                             />
@@ -92,7 +92,7 @@ function movieDetail() {
                           <div className="flex relative p-10">
                             <div className="flex flex-col w-1/5">
                               <img
-                                src={IMAGEURL + item.poster_path}
+                                src={IMAGE_URL + item.poster_path}
                                 alt="Movie Poster"
                                 className="rounded-lg"
                               />

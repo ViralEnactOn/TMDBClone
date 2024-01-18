@@ -10,7 +10,7 @@ import {
   ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 import axios from "axios";
-import { APIURL, Header, IMAGEURL } from "../config/config";
+import { API_URL, Header, IMAGE_URL } from "../config/config";
 import store from "../store/store";
 import { ThreeCircles } from "react-loader-spinner";
 axios.defaults.headers.common = Header;
@@ -36,7 +36,7 @@ function wheretoWatch() {
     };
     store.dispatch({ type: "UPDATE_COUNTRY", payload: updatedSelectCountry });
     setSelected(value);
-    const endPoint = APIURL + "watch/providers/movie";
+    const endPoint = API_URL + "watch/providers/movie";
     const params = {
       language: "en-US",
       watch_region: value.iso_3166_1 || "IN",
@@ -48,7 +48,7 @@ function wheretoWatch() {
 
   // Fetch All Region
   const handleRegion = async () => {
-    const endPoint = APIURL + "watch/providers/regions";
+    const endPoint = API_URL + "watch/providers/regions";
     const params = {
       language: "en-US",
     };
@@ -58,7 +58,7 @@ function wheretoWatch() {
   };
 
   // Select watch provider
-  const handleSelectedWatchProvier = (id, name) => {
+  const handleSelectedWatchProvider = (id, name) => {
     let updatedSelectedProvider;
     if (selectedProvider.some((provider) => provider.value === id)) {
       updatedSelectedProvider = selectedProvider.filter((v) => v.value !== id);
@@ -96,14 +96,14 @@ function wheretoWatch() {
         <>
           <div className="border-t-2 mt-2 pt-2 text-gray-400">Country</div>
           {/* Select Country*/}
-          <div className="top-16 w-72 ">
+          <div className="top-16 ">
             <Listbox
               value={selected}
               onChange={(value) => handleWatchCountry(value)}
             >
               <div className="relative mt-1 ">
-                <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                  <span className="block truncate">
+                <Listbox.Button className=" w-full relative cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                  <span className="block truncate text-sm">
                     {selected.english_name ? selected.english_name : selected}
                   </span>
                   <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -119,12 +119,12 @@ function wheretoWatch() {
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className="mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  <Listbox.Options className="mt-1 max-h-60 text-sm overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     {region.map((person, personIdx) => (
                       <Listbox.Option
                         key={personIdx}
                         className={({ active }) =>
-                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                          `relative cursor-default select-none py-2 pl-10  ${
                             active
                               ? "bg-amber-100 text-amber-900"
                               : "text-gray-900"
@@ -135,7 +135,7 @@ function wheretoWatch() {
                         {({ selected }) => (
                           <>
                             <span
-                              className={`block truncate ${
+                              className={` ${
                                 selected ? "font-medium" : "font-normal"
                               }`}
                             >
@@ -179,7 +179,7 @@ function wheretoWatch() {
             </>
           ) : (
             <>
-              <div className="grid grid-cols-4 gap-4 mt-5">
+              <div className="grid grid-cols-5 gap-2 mt-5 sm:grid-cols-4">
                 {watchProvider.map((name, index) => {
                   return (
                     <>
@@ -188,13 +188,13 @@ function wheretoWatch() {
                         key={index}
                       >
                         <img
-                          className="rounded-lg"
-                          src={IMAGEURL + name.logo_path}
+                          className="rounded-lg lg:h-16 lg:w-16 md:h-10 md:w-10 sm:h-8 sm:w-8 xs:w-12 xs:w-12"
+                          src={IMAGE_URL + name.logo_path}
                           alt={name.provider_name}
                         />
                         <div
                           onClick={() =>
-                            handleSelectedWatchProvier(
+                            handleSelectedWatchProvider(
                               name.provider_id,
                               name.provider_name
                             )
@@ -217,7 +217,7 @@ function wheretoWatch() {
                                 : "hidden"
                             }
                           >
-                            <CheckIcon className="h-10 w-10" />
+                            <CheckIcon className="rounded-lg lg:h-16 lg:w-16 md:h-10 md:w-10 sm:h-8 sm:w-8 xs:w-12 xs:w-12" />
                           </div>
                         </div>
                       </div>
